@@ -1,0 +1,13 @@
+streamlit
+audio-recorder-streamlit
+openai
+python-dotenv
+streamlit-float
+google-generativeai
+#streamlit: For building and running the web app.
+
+#openai: To access OpenAI's API for speech-to-text and text-to-speech services.
+
+#audio_recorder_streamlit: To record audio within the Streamlit app.
+
+#streamlit-float: Provides floating elements in the Streamlit interface
