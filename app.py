@@ -1,13 +1,15 @@
 import streamlit as st
 import os
-from utils import get_answer,autoplay_audio
+from utils import autoplay_audio
 from audio_recorder_streamlit import audio_recorder
 from streamlit_float import *
-from opsource_app import speech2text, text2speech
+from opsource_app import speech2text, text2speech, get_answer
 
 # Float feature initialization
 float_init()
 
+system_message = "Act like you are a kind and helpful human customer support agent named 'Shizuka' at a call center and never leave that role.Always use short sentences and directly respond to the prompt without excessive information.You should generate only words of value, prioritizing logic and facts over speculating in your response"
+    
 def role_to_streamlit(role):
   if role == "model":
     return "assistant"
@@ -17,7 +19,7 @@ def role_to_streamlit(role):
 def initialize_session_state():
     if "messages" not in st.session_state:
         st.session_state.messages = [
-            {"role": "assistant", "content": "Hi! I am Shizuka 🙋‍♀️ Please let me know how may I assist you today 🌞?"}
+            {"role": "model", "content": system_message }
         ]
         autoplay_audio(r"welcome.mp3")
 
@@ -62,7 +64,18 @@ if audio_bytes:
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
         with st.spinner("Thinking🤔..."):
-            final_response = get_answer(st.session_state.messages)
+
+            #For Gemini API Only
+            # Assuming st.session_state.messages is your list
+            message_content = [message["content"] for message in st.session_state.messages]
+            # Concatenate the content into a single string
+            message_string = " ".join(message_content)
+            final_response = get_answer(message_string)
+
+            #For OpenAI
+            #final_response = get_answer(st.session_state.messages)
+
+
         with st.spinner("Generating audio response..."):    
             audio_file = text2speech(final_response)
             autoplay_audio(audio_file)

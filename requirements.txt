@@ -4,6 +4,7 @@ openai
 python-dotenv
 streamlit-float
 google-generativeai
+vertexai
 #streamlit: For building and running the web app.
 
 #openai: To access OpenAI's API for speech-to-text and text-to-speech services.

@@ -6,24 +6,31 @@ import google.generativeai as genai
 import streamlit as st
 import base64
 import os
+import vertexai
+from vertexai.generative_models import GenerativeModel, ChatSession
 
 load_dotenv()
 
-
 HUGGINGFACEHUB_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+
+def get_chat_response(chat: ChatSession, prompt: str) -> str:
+    text_response = []
+    responses = chat.send_message(prompt, stream=True)
+    for chunk in responses:
+        text_response.append(chunk.text)
+    return "".join(text_response)
 
 def get_answer(message):
     genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
     system_message = "Act like you are a kind and helpful human customer support agent named 'Shizuka' at a call center and never leave that role.Always use short sentences and directly respond to the prompt without excessive information.You should generate only words of value, prioritizing logic and facts over speculating in your response"
-    message = system_message+message
-
+    #message.parts = system_message+message.parts
     generation_config = {
     "temperature": 0,
     "top_p": 1,
     "top_k": 1,
     "max_output_tokens": 2048,
     }
-    
+    print(message)
     safety_settings = [
     {
         "category": "HARM_CATEGORY_HARASSMENT",
@@ -49,8 +56,9 @@ def get_answer(message):
     
 
 
-    response = model.generate_content(message)
-    return response.text
+    response = model.start_chat()
+    prompt = "What are all the colors in a rainbow?"
+    return get_chat_response(response, message)
 
 
 def text2speech(input_text):
@@ -87,3 +95,4 @@ def autoplay_audio(file_path: str):
     </audio>
     """
     st.markdown(md, unsafe_allow_html=True)
+
