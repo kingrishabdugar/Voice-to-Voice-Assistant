@@ -21,7 +21,7 @@ def initialize_session_state():
         st.session_state.messages = [
             {"role": "model", "content": system_message }
         ]
-        autoplay_audio(r"welcome.mp3")
+        #autoplay_audio(r"welcome.mp3")
 
 initialize_session_state()
 
